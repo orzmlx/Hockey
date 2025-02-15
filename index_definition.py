@@ -59,4 +59,5 @@ BODY_CHECK = {"body_check":"eventname == 'check' & type=='body' "}
 #关键扑救
 # SAVE = "eventname == 'save' & type == 'none'"
 
+
 CONFIDENCE_INDEX = {**GOAL, **ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK}

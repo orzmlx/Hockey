@@ -7,18 +7,19 @@ def get_index(df,gameid,teamid,events ,tfrom=0 ,to=3600 ):
     """
     :return: the index of the attacking team
     """
+
     succ_index = 0
     index = 0
     df_copy = df.copy()
-    # index_detail_df = pd.DataFrame(data, columns=[
-    #     'game_id', 'timestamp', 'elapsed_minutes',
-    #     'score_diff', 'result'
-    index_dict = {"teamid":teamid,"gameid":gameid}
     if gameid is not None :
         df_copy = df_copy[df_copy['gameid'] == gameid]
     if teamid is not None:
         df_copy = df_copy[df_copy['teamid'] == teamid]
     df_copy = df_copy[(df_copy['compiledgametime'] >= tfrom) & (df_copy['compiledgametime'] <= to)]
+    score_diff_min = df_copy['scoredifferential'].min()
+    score_diff_max = df_copy['scoredifferential'].max()
+    score_diff = score_diff_min if abs(score_diff_min) > abs(score_diff_max) else score_diff_max
+    single_index_dict = {"teamid":teamid,"gameid":gameid,"elapsed_sec":to,"score_diff":score_diff}
     for name,action in events.items():
         #logging.info(f"the number of {action} ）")
         condition = df_copy.eval(action)
@@ -26,10 +27,10 @@ def get_index(df,gameid,teamid,events ,tfrom=0 ,to=3600 ):
         success_result = result[result['outcome'] == 'successful']
         succ_index = succ_index + len(success_result) #计算成功总数量
         index = index + len(result) #计算总数量
-        index_dict = {**index_dict, **{name: len(result)}}
-
+        single_index_dict = {**single_index_dict, **{name: len(result)}, **{name + "_succ": len(success_result)}}
+    # index_dict = {**single_index_dict, **{"elapsed_sec": to}, **{"score_diff": score_diff}}
         #logging.info(f"the number of {action} is {len(result)}.total number of index is {index}")
-    return index, succ_index,pd.DataFrame([index_dict])
+    return index, succ_index,pd.DataFrame([single_index_dict])
 
 def get_score_time(df,gameid,teamid):
     df_copy = df.copy()

@@ -28,7 +28,7 @@ def get_home_team_id(df, gameid) -> int:
     return df[(df['ishomegame'] == 1) & (df['gameid'] == gameid)]['teamid'].unique()[0] \
             if gameid is not None else df[df['ishomegame'] == 1]['teamid'].unique()[0]
 
-def get_winner(df, gameid) -> int:
+def get_winner(df, gameid) -> [int,int]:
     """
     :param df:
     :param gameid:
@@ -39,7 +39,11 @@ def get_winner(df, gameid) -> int:
     last_row_team_id = last_row['teamid']
     another_team_id = teams[0] if teams[0] != last_row_team_id else teams[1]
     last_row_score_diff = last_row['scoredifferential']
-    return last_row_team_id if last_row_score_diff > 0 else another_team_id
+    if last_row_score_diff == 0:
+        return [last_row_team_id, another_team_id, False]
+    return [last_row_team_id,another_team_id,True] if last_row_score_diff > 0 else [another_team_id,last_row_team_id,True]
+
+
 
 
 # 控球率
