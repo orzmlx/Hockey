@@ -20,18 +20,18 @@ custom_style = {
 }
 
 
-def get_confidence_index(df, gameids, events, time_interval, tfrom=0, to=3600, Display=True) -> DataFrame:
+def get_index_cut_by_time(df, gameids, events, time_interval, tfrom=0, to=3600) -> DataFrame:
     """
     :return: the index of the attacking team
     """
+    if to - tfrom < time_interval:
+        raise ValueError("The time interval is too large")
     detail_sum_df = pd.DataFrame()
     # 设置整个图形的大小，高度根据行数调整
     with tqdm(total=len(gameids),colour='BLUE', dynamic_ncols=True,desc="🚀 Processing") as pbar:
         for ig in range(len(gameids)):  # max_cols = 2 #每行最多显示2张
             current_batch_size = math.floor((ig / len(gameids)) * 100) #向下取整计算进度
             gameid = gameids[ig]
-            winner_id = common.get_winner(df, gameid)[0]
-           # ax = plt.subplot(rows, cols, ig + 1)
             team_df = df[(df['gameid'] == gameid)]
             teams = team_df['teamid'].unique()
             for teamid in teams:
@@ -45,14 +45,12 @@ def get_confidence_index(df, gameids, events, time_interval, tfrom=0, to=3600, D
                 current_sum_confidence = 0
                 current_succ_confidence = 0
                 for i in range(len(num_bins)):
-                    if (i + 1) == len(num_bins):
-                        break
+                    if (i + 1) == len(num_bins):break
                     from_bin = num_bins[i]
                     to_bin = num_bins[i + 1]
                     aindex, sindex, detail_df = ai.get_index(team_df, gameid, teamid, events, from_bin, to_bin)
                     current_sum_confidence += aindex
                     current_succ_confidence += sindex
-                    # detail_sum_df = detail_df if detail_sum_df.empty else pd.concat([detail_sum_df, detail_df],ignore_index=True)
                     #总体的指数成功率
                     current_rate = 0 if current_sum_confidence == 0 else current_succ_confidence / current_sum_confidence
                     for gl in goal_times:
@@ -64,25 +62,12 @@ def get_confidence_index(df, gameids, events, time_interval, tfrom=0, to=3600, D
                     confidence_rate_sum.append(current_rate)
                     detail_sum_df = detail_df if detail_sum_df.empty else pd.concat([detail_sum_df, detail_df],ignore_index=True)
             pbar.update(current_batch_size)
-           # sns.lineplot(x=list(num_bins)[1:], y=confidence_sum,label = teamid,ax=ax)
-           #  sns.lineplot(x=list(num_bins)[1:], y=confidence_rate_sum,label = teamid,ax=ax)
-           #  if teamid == winner_id:
-           #     # ax.text(list(num_bins)[1:][-1], confidence_sum[-1], 'winner', fontsize=12)
-           #      ax.text(list(num_bins)[1:][-1], confidence_rate_sum[-1], 'winner', fontsize=12)
-           #
-           #  ax.scatter(x=goal_x, y=goal_succ_rate_y, color='red', marker='o', s=20, label='Goal Point')
-           #  title = 'Game:' + str(gameid) + ' Confidence Index'
-           #  ax.set_title(title)
-    # plt.tight_layout()
-    # plt.legend()
-    # if Display:
-    #     plt.show()
     return detail_sum_df
 
 if __name__ == '__main__':
     data = pd.read_csv("Linhac24-25_Sportlogiq.csv")
     gameids = data['gameid'].unique()
     data['inopponentarea'] = data.apply(common.puck_location, axis=1)
-    detail_df = get_confidence_index(data, gameids[20:40], idef.CONFIDENCE_INDEX,30, 0,3600)
+    detail_df = get_index_cut_by_time(data, gameids[20:40], idef.CONFIDENCE_INDEX,30, 0,3600)
     print()
 

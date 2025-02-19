@@ -44,10 +44,21 @@ DEFEND_EVENTS = {"(eventname =='block') & (outcome == 'successful')  & (inoppone
 
                  "(eventname =='lpr') & (outcome == 'successful') & (inopponentarea == 1)",
                  # "(eventname =='controlledentryagainst') & (type in ['3on2','1on1','2on2','3on3','2on1','3on1']) ",
-                 }
-
+             }
 #进球
+#BODY ={"body_check":"eventname == 'check' & type=='body'","puckprotection":"eventname == 'puckprotection' & type=='body'"}
+BODY = {"body": f"{'type'}.str.contains('{'body'}')"}
+STRETCH = {"stretch": "type == 'stretch'"}
+RECOVER = {"recover": "type == 'recovered'"}
+RUSH = {"rush": f"{'type'}.str.contains('{'rush'}')"}
+THREE_ON_TWO = {"three_on_two": "type == '3on2'"}
+CONTEST = {"contest": f"{'type'}.str.contains('{'contest'}')"}
 GOAL = {"goal":"eventname == 'goal'"}
+SHOT = {"shot":"eventname == 'shot'"}
+PASS = {"pass":"eventname == 'pass'"}
+BLOCK = {"block":"eventname == 'block'"}
+CHECK  = {"check":"eventname == 'check'"}
+SAVE = {"save":"eventname == 'save'"}
 #对方半场精准接球
 ACCURACY_RECEPTION = {"accuracy_reception":"eventname == 'reception'  &  inopponentarea == 0"}
 #精准传球
@@ -60,4 +71,7 @@ BODY_CHECK = {"body_check":"eventname == 'check' & type=='body' "}
 # SAVE = "eventname == 'save' & type == 'none'"
 
 
-CONFIDENCE_INDEX = {**GOAL, **ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK}
+CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK}
+EXERTION_INDEX = {**RUSH, **CONTEST, **BODY, **BLOCK, **SAVE,
+                  **CHECK, **GOAL, **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH}
+

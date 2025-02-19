@@ -4,6 +4,13 @@ from typing import Tuple, Any, List
 import pandas as pd
 import numpy as np
 
+
+def is_first_goal(df,gameid,goal_time):
+    goal_actual_index = df[df['compiledgametime'] == goal_time].index
+
+
+
+
 def puck_location(row):
     """
     :param row:
@@ -48,9 +55,9 @@ def get_winner(df, gameid) -> [int,int]:
 
 # 控球率
 # 最大控球时长
-def get_control_rate(df, gameid) -> tuple[float | Any, float | Any, list[Any], list[Any]]:
+def get_control_rate(df, gameid,tfrom = 0,to = 3600) -> tuple[float | Any, float | Any, list[Any], list[Any]]:
     df_copy = df.copy()
-    df_copy = df_copy[df_copy['gameid'] == gameid]
+    df_copy = df_copy[(df_copy['gameid'] == gameid) & (df_copy['compiledgametime'] >= tfrom) & (df_copy['compiledgametime'] <= to)]
     home_possession_time = 0
     home_possession_period = list()
     visit_possession_time = 0
@@ -79,14 +86,14 @@ def get_control_rate(df, gameid) -> tuple[float | Any, float | Any, list[Any], l
 
 
 
-def get_control_rate0(df, gameid) -> tuple[float | Any, float | Any, list[Any], list[Any]]:
+def get_control_rate0(df, gameid,tfrom = 0, to= 3600) -> tuple[float | Any, float | Any, list[Any], list[Any]]:
 
     home_possession_time = 0
     home_possession_period = list()
     visit_possession_time = 0
     visit_possession_period = list()
     df_copy = df.copy()
-    df_copy = df_copy[df_copy['gameid'] == gameid]
+    df_copy = df_copy[(df_copy['gameid'] == gameid) & (df_copy['compiledgametime'] >= tfrom) & (df_copy['compiledgametime'] <= to)]
     home_team_id = get_home_team_id(df_copy, None)
     #去掉currentinpossession为空的行
     df_copy =  df_copy.dropna(subset=['currentpossession'])
