@@ -1,1 +1,1 @@
-Data ming competition for  LINHAC 2025
+Data mining competition for  LINHAC 2025
