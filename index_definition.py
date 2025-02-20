@@ -71,7 +71,7 @@ BODY_CHECK = {"body_check":"eventname == 'check' & type=='body' "}
 # SAVE = "eventname == 'save' & type == 'none'"
 
 
-CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK}
+CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK,**GOAL}
 EXERTION_INDEX = {**RUSH, **CONTEST, **BODY, **BLOCK, **SAVE,
-                  **CHECK, **GOAL, **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH}
+                  **CHECK,  **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH}
 
