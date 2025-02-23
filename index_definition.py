@@ -48,10 +48,14 @@ DEFEND_EVENTS = {"(eventname =='block') & (outcome == 'successful')  & (inoppone
 #进球
 #BODY ={"body_check":"eventname == 'check' & type=='body'","puckprotection":"eventname == 'puckprotection' & type=='body'"}
 BODY = {"body": f"{'type'}.str.contains('{'body'}')"}
+
+OPDUMP = {"opdump":f"{'type'}.str.contains('{'opdump'}')"}
 STRETCH = {"stretch": "type == 'stretch'"}
 RECOVER = {"recover": "type == 'recovered'"}
 RUSH = {"rush": f"{'type'}.str.contains('{'rush'}')"}
 THREE_ON_TWO = {"three_on_two": "type == '3on2'"}
+TWO_ON_THREE = {"two_on_three": "type == '2on3'"}
+CARRY = {"carry": "eventname == 'carry'"}
 CONTEST = {"contest": f"{'type'}.str.contains('{'contest'}')"}
 GOAL = {"goal":"eventname == 'goal'"}
 SHOT = {"shot":"eventname == 'shot'"}
@@ -59,6 +63,7 @@ PASS = {"pass":"eventname == 'pass'"}
 BLOCK = {"block":"eventname == 'block'"}
 CHECK  = {"check":"eventname == 'check'"}
 SAVE = {"save":"eventname == 'save'"}
+PROTECTION = {"puckprotection":"eventname == 'puckprotection'"}
 #对方半场精准接球
 ACCURACY_RECEPTION = {"accuracy_reception":"eventname == 'reception'  &  inopponentarea == 0"}
 #精准传球
@@ -69,9 +74,11 @@ EFFICIENT_BLOCK = {"efficient_block" : "eventname == 'block'  & inopponentarea =
 BODY_CHECK = {"body_check":"eventname == 'check' & type=='body' "}
 #关键扑救
 # SAVE = "eventname == 'save' & type == 'none'"
+#己方半场护球成功
+SELF_AREA_PROTECTION = {"self_area_protection":"(eventname =='check') & (inopponentarea == 1)"}
 
-
-CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK,**GOAL}
-EXERTION_INDEX = {**RUSH, **CONTEST, **BODY, **BLOCK, **SAVE,
-                  **CHECK,  **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH}
+CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK,**GOAL,
+                     **SELF_AREA_PROTECTION}
+EXERTION_INDEX = {**RUSH, **CONTEST, **BODY, **BLOCK, **SAVE, **PROTECTION, **CARRY,
+                  **CHECK,  **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH,**TWO_ON_THREE,**OPDUMP}
 

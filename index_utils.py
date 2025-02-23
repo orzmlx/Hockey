@@ -71,3 +71,11 @@ def plot_index(df, gameid, teamid, events, time_interval, tfrom=0, to=3600) -> i
     plt.scatter(x=goal_x, y=goal_y, color='red', marker='o', s=20, label='Special Point')
     plt.show()
     return event_num
+
+
+
+
+
+#每轮进攻的时长
+
+#carry的时长

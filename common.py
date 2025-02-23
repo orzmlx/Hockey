@@ -112,11 +112,54 @@ def get_control_rate0(df, gameid,tfrom = 0, to= 3600) -> tuple[float | Any, floa
             visit_possession_period.append(hold_time)
     return (home_possession_time / (home_possession_time + visit_possession_time)),\
              (visit_possession_time / (home_possession_time + visit_possession_time)), home_possession_period, visit_possession_period
+
+def get_carry_time(df, gameid, tfrom = 0, to = 3600):
+    """
+    获取每轮的进攻时间
+    :param df:`
+    :param gameid:
+    :param tfrom:
+    :param to:
+    :return:
+    """
+    all_carry_events = []
+    df_copy = df.copy()
+    df_copy = df_copy[(df_copy['gameid'] == gameid) & (df_copy['compiledgametime'] > tfrom) & (df_copy['compiledgametime'] <= to)]
+    grouped = df_copy.groupby(['gameid','currentpossession'])
+    def consume_carry_time(row,possession_time_list,carry_event_list,carry_start_player):
+        current_player = row['playerid']
+        current_time = row['compiledgametime']
+        event_name = row['eventname']
+        if current_player != carry_start_player: return
+        else:
+            possession_time_list.append(current_time)
+            carry_event_list.append(event_name)
+
+    carry_time = 0
+    for gameid, group_data in grouped:
+        event_names = group_data['eventname'].unique()
+        if "carry" not in event_names:continue
+        carry_start_index = group_data[group_data['eventname']=='carry'].index.tolist()[0]
+        carry_start_player = group_data.loc[carry_start_index,'playerid']
+        carry_start_time = group_data.loc[carry_start_index,'compiledgametime']
+        possession_time_list = [carry_start_time]
+        carry_event_list = []
+        carry_df = group_data.loc[carry_start_index:]
+        carry_df.apply(consume_carry_time,axis=1,args=(possession_time_list,carry_event_list,carry_start_player))
+        carry_time += possession_time_list[-1] - possession_time_list[0]
+        all_carry_events.append((carry_start_time,carry_event_list))
+
+
+
+
+
+
 if __name__ == '__main__':
     data = pd.read_csv("Linhac24-25_Sportlogiq.csv")
 
    # home_control_rate, visit_control_rate , home_max_control_time , visit_max_control_time = get_control_rate(data, 64485)
 
-    home_control_rate, visit_control_rate , home_max_control_time , visit_max_control_time = get_each_round_time(data, 64485)
-
-    print(home_control_rate, visit_control_rate, home_max_control_time, visit_max_control_time)
+    # home_control_rate, visit_control_rate , home_max_control_time , visit_max_control_time = get_each_round_time(data, 64485)
+    #
+    # print(home_control_rate, visit_control_rate, home_max_control_time, visit_max_control_time)
+    get_carry_time(data,72393,0,3600)
