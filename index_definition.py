@@ -82,3 +82,76 @@ CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_B
 EXERTION_INDEX = {**RUSH, **CONTEST, **BODY, **BLOCK, **SAVE, **PROTECTION, **CARRY,
                   **CHECK,  **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH,**TWO_ON_THREE,**OPDUMP}
 
+# 类型	方向	用途	技术	风险等级
+# north	纵向	快速推进	直接传球	中
+# eastwest	横向	组织进攻	直接传球	高
+# d2d	横向	安全控制	直接传球	低
+# outletoffboards	纵向	守区出球	板墙传球	中
+# ozentryoffboards	纵向	攻区进入	板墙传球	中
+# stretchoffboards	纵向	快速反击	板墙+长传	高
+HIGH_RISK_PASS= ['eastwest','stretchoffboards']
+MEDIUM_RISK_PASS = ['ozentryoffboards','outletoffboards','slot']
+LOW_RISK_PASS = ['d2d']
+# 按战术用途分类
+# 大类	包含的具体类型	典型场景
+# 守区出球	outlet, outletoffboards, d2doffboards	破解对手前场压迫
+# 攻区进入	ozentry, ozentryoffboards	建立攻区控球
+# 快速反击	stretch, stretchoffboards, rush	利用速度突破防线
+# 高风险组织	eastwest, eastwestoffboards	横向转移但易被拦截
+# 安全控制	d2d, southoffboards	后卫间传递稳定节奏
+Defensive_zone_passing = ['outlet', 'outletoffboards', 'd2doffboards']
+Entry_into_offensive_zone = ['ozentry', 'ozentryoffboards']
+Quick_counterattack = ['stretch', 'stretchoffboards', 'rush']
+High_risk_organization = ['eastwest', 'eastwestoffboards']
+Safe_control = ['d2d', 'southoffboards']
+
+PASS_STATISTIC = {'HIGH_RISK_PASS': HIGH_RISK_PASS,
+                  'MEDIUM_RISK_PASS':MEDIUM_RISK_PASS,
+                  'LOW_RISK_PASS':LOW_RISK_PASS,
+                  'Defensive_zone_passing':Defensive_zone_passing,
+                  'Entry_into_offensive_zone':Entry_into_offensive_zone,
+                  'Quick_counterattack':Quick_counterattack,
+                  'High_risk_organization':High_risk_organization,
+                  'Safe_control':Safe_control}
+
+
+
+
+Slingshot_chain = [['pass_south',  'pass_north'],
+                   #传球失败，就没有下面这个链
+                   #['pass_south', 'reception_regular', 'pass_north', 'reception_regular']
+                   ]
+#多次回传，找进进攻机会
+Reset_Recycle_chain = ['pass_south', 'pass_south']
+
+
+
+overcome_pressure_chain = [['pass_south', 'block_pass'],
+                           ['pass_south', 'controlledexit_carrywithplay']]
+
+
+
+attach_chain =[['pass_south',  'shot_outside'],# 低效率
+
+['pass_south',  'pass_slot'],
+
+['pass_south',  'shot_slot']]
+
+
+
+#create space
+east_west_chain = [['pass_south', 'pass_eastwest']]
+
+
+
+# 快速交替，意味着对手前压激烈，或者执行拉扯空间的战术意图
+
+
+pass_rapid_chain = [['pass_south', 'pass_north', 'pass_south'],
+                    ['pass_south', 'pass_south', 'pass_south']]
+
+pass_south_pattern = {'Slingshot_chain':Slingshot_chain,
+                       'Reset_Recycle_chain' :  Reset_Recycle_chain,
+                      'overcome_pressure_chain':overcome_pressure_chain,
+                      'east_west_chain':east_west_chain,
+                      'pass_rapid_chain':pass_rapid_chain}

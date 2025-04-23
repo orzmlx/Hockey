@@ -108,9 +108,16 @@ def enhance_features():
     """
     pass
 
+def exchange_visit_home(data, df):
+    pass
+
+
+def add_noise():
+    pass
+
 
 if __name__ == '__main__':
-    data = pd.read_csv("Linhac24-25_Sportlogiq.csv")
+    data = pd.read_csv("data/Linhac24-25_Sportlogiq.csv")
     data['inopponentarea'] = data.apply(common.puck_location, axis=1)
     unique_gameids = data['gameid'].unique()
     gameids = unique_gameids.tolist()[1:5]

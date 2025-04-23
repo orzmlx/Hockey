@@ -65,7 +65,7 @@ def get_index_cut_by_time(df, gameids, events, time_interval, tfrom=0, to=3600) 
     return detail_sum_df
 
 if __name__ == '__main__':
-    data = pd.read_csv("Linhac24-25_Sportlogiq.csv")
+    data = pd.read_csv("data/Linhac24-25_Sportlogiq.csv")
     gameids = data['gameid'].unique()
     data['inopponentarea'] = data.apply(common.puck_location, axis=1)
     detail_df = get_index_cut_by_time(data, gameids[20:40], idef.CONFIDENCE_INDEX,30, 0,3600)

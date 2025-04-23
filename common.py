@@ -86,7 +86,7 @@ def get_control_rate(df, gameid,tfrom = 0,to = 3600) -> tuple[float | Any, float
 
 
 
-def get_control_rate0(df, gameid,tfrom = 0, to= 3600) -> tuple[float | Any, float | Any, list[Any], list[Any]]:
+def get_control_rate0(df, gameid,tfrom = 0, to= 3600,home_team_id = None) -> tuple[float | Any, float | Any, list[Any], list[Any]]:
 
     home_possession_time = 0
     home_possession_period = list()
@@ -94,7 +94,8 @@ def get_control_rate0(df, gameid,tfrom = 0, to= 3600) -> tuple[float | Any, floa
     visit_possession_period = list()
     df_copy = df.copy()
     df_copy = df_copy[(df_copy['gameid'] == gameid) & (df_copy['compiledgametime'] >= tfrom) & (df_copy['compiledgametime'] <= to)]
-    home_team_id = get_home_team_id(df_copy, None)
+    if home_team_id is None:
+        home_team_id = get_home_team_id(df_copy, None)
     #去掉currentinpossession为空的行
     df_copy =  df_copy.dropna(subset=['currentpossession'])
     grouped = df_copy.groupby("currentpossession")
@@ -110,8 +111,9 @@ def get_control_rate0(df, gameid,tfrom = 0, to= 3600) -> tuple[float | Any, floa
         else:
             visit_possession_time += hold_time
             visit_possession_period.append(hold_time)
-    return (home_possession_time / (home_possession_time + visit_possession_time)),\
-             (visit_possession_time / (home_possession_time + visit_possession_time)), home_possession_period, visit_possession_period
+    home_possession_rate = 0 if (home_possession_time + visit_possession_time) == 0 else (home_possession_time / (home_possession_time + visit_possession_time))
+    visit_possession_rate = 0 if (home_possession_time + visit_possession_time) == 0 else (visit_possession_time / (home_possession_time + visit_possession_time))
+    return home_possession_rate,visit_possession_rate, home_possession_period, visit_possession_period
 
 def get_carry_time(df, gameid, tfrom = 0, to = 3600):
     """
@@ -155,7 +157,7 @@ def get_carry_time(df, gameid, tfrom = 0, to = 3600):
 
 
 if __name__ == '__main__':
-    data = pd.read_csv("Linhac24-25_Sportlogiq.csv")
+    data = pd.read_csv("data/Linhac24-25_Sportlogiq.csv")
 
    # home_control_rate, visit_control_rate , home_max_control_time , visit_max_control_time = get_control_rate(data, 64485)
 
