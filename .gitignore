@@ -1,0 +1,9 @@
+../../Desktop/room_device-master/.idea/
+tmp/
+*.log
+pics/
+lib/
+lib64/
+__pycache__/
+.DS_Store
+*.iml
