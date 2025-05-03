@@ -1,20 +1,21 @@
 """
 define the events that are considered as strength events
 """
-# 对方半场的进攻事件
+
 STRENGTH_EVENTS = [
+    #The offensive incident in the opponent's half of the field
     "(eventname =='pass') &  (outcome == 'successful') & (type in ['ozentrystretch','d2doffboards','outletoffboards','rushoffboards','rush','eastwest']) ",
     "(eventname =='lpr') & (outcome == 'successful') & (inopponentarea == 0)",
     "(eventname =='check') & (inopponentarea == 0) & (outcome == 'successful')",
     #   "(eventname =='dumpin') & (outcome =='successful')",
-    # 只要是shot都算进攻，无论成功或者失败
+    #Any shot counts as an attack, whether it succeeds or fails.
     "(eventname =='shot') ",
-    # 尝试在对方半场造犯规
+    # Attempt to draw a foul in the opponent's half of the court.
     # "(eventname =='penaltydrawn' & outcome == 'successful')",# keep 迫使对手犯规获得多打少机会，提升后续进攻威胁
     # 对方半场争球成功
     "(eventname =='faceoff') & (type in ['recoveredwithshotonnet','recoveredwithshotonnetandslotshot','recoveredwithslotshot']) & (outcome == 'successful')",
     # keep
-    # 对方半场护球成功
+    # The opponent successfully defended the ball in their half of the field.
     "(eventname =='puckprotection') & (inopponentarea == 0) & (outcome == 'successful')",  # keep
 
     "(eventname =='controlledentry') & (outcome == 'successful')",  # keep
@@ -25,27 +26,28 @@ STRENGTH_EVENTS = [
 """
 define the events that are considered as defend events
 
-"""  # 成功在己方半场护球成功
+"""
+# Successful in retaining possession in one's own half of the field.
 DEFEND_EVENTS = {"(eventname =='block') & (outcome == 'successful')  & (inopponentarea == 1)",
-                 # 成功在己方解围成功
+                 # Success lies in successfully resolving one's own predicament
                  "(eventname =='dumpout')  & (inopponentarea == 1) & (outcome == 'successful')",
-                 # 成功在己方半场合法撞击抢球
+                 # Successful legal collision and ball recovery in the opponent's half of the field.
                  "(eventname =='check') & (inopponentarea == 1) & (outcome == 'successful')",
-                 # # 尝试在己方半场造犯规
+                 # Attempt to commit a foul in one's own half of the field
                  #    "(eventname =='penaltydrawn') & (inopponentarea == 1)",
                  "(eventname =='faceoff') & (inopponentarea == 1) & (outcome == 'successful')",
-                 # 己方半场护球
+                 # Defensive ball control in one's own half of the field
                  "(eventname =='puckprotection') & (inopponentarea == 1) & (outcome == 'successful')",  # keep
 
-                 # 在己方半场抢球成功
+                 # Successfully recovering the ball in one's own half of the field
                  # "(eventname =='lpr') & (outcome == 'successful') & (inopponentarea == 1)",
-                 # 成功带出
+                 # Successfully brought out
                  "(eventname =='controlledexit') & (outcome == 'successful')",
 
                  "(eventname =='lpr') & (outcome == 'successful') & (inopponentarea == 1)",
                  # "(eventname =='controlledentryagainst') & (type in ['3on2','1on1','2on2','3on3','2on1','3on1']) ",
              }
-#进球
+
 #BODY ={"body_check":"eventname == 'check' & type=='body'","puckprotection":"eventname == 'puckprotection' & type=='body'"}
 BODY = {"body": f"{'type'}.str.contains('{'body'}')"}
 
@@ -64,17 +66,17 @@ BLOCK = {"block":"eventname == 'block'"}
 CHECK  = {"check":"eventname == 'check'"}
 SAVE = {"save":"eventname == 'save'"}
 PROTECTION = {"puckprotection":"eventname == 'puckprotection'"}
-#对方半场精准接球
+#Receiving the ball accurately in the opponent's half of the field
 ACCURACY_RECEPTION = {"accuracy_reception":"eventname == 'reception'  &  inopponentarea == 0"}
-#精准传球
+#Precise Pass
 ACCURACY_PASS = {"accuracy_pass":"eventname == 'pass'  & type in ['ozentrystretch','d2doffboards','outletoffboards','rushoffboards','rush','eastwest']"}
-#己方区域的有效防守
+#Effective defense within one's own territory
 EFFICIENT_BLOCK = {"efficient_block" : "eventname == 'block'  & inopponentarea == 1"}
-#身体对抗成功断球
+#Successful Body Check to Intercept the Ball
 BODY_CHECK = {"body_check":"eventname == 'check' & type=='body' "}
-#关键扑救
+# Key Rescue Operation
 # SAVE = "eventname == 'save' & type == 'none'"
-#己方半场护球成功
+#Successful ball control in our own half of the field
 SELF_AREA_PROTECTION = {"self_area_protection":"(eventname =='check') & (inopponentarea == 1)"}
 
 CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_BLOCK, **BODY_CHECK,**GOAL,
@@ -82,23 +84,24 @@ CONFIDENCE_INDEX = { **SHOT,**ACCURACY_RECEPTION, **ACCURACY_PASS, **EFFICIENT_B
 EXERTION_INDEX = {**RUSH, **CONTEST, **BODY, **BLOCK, **SAVE, **PROTECTION, **CARRY,
                   **CHECK,  **PASS,**THREE_ON_TWO,**RECOVER,**STRETCH,**TWO_ON_THREE,**OPDUMP}
 
-# 类型	方向	用途	技术	风险等级
-# north	纵向	快速推进	直接传球	中
-# eastwest	横向	组织进攻	直接传球	高
-# d2d	横向	安全控制	直接传球	低
-# outletoffboards	纵向	守区出球	板墙传球	中
-# ozentryoffboards	纵向	攻区进入	板墙传球	中
-# stretchoffboards	纵向	快速反击	板墙+长传	高
+# Type	Direction	Usage	Technology	Risk Level
+# north	Vertical	Quick Advance	Direct Pass	Medium
+# eastwest	Horizontally Oriented	Organizing Offensive Play	Direct Pass	High
+# d2d	Horizontally Oriented	Safe Control	Direct Pass	Low
+# outletoffboards	Vertical	Defensive Zone Outgoing Ball Passing	Board Wall Passing	Medium
+# ozentryoffboards	Vertical	Offensive Zone Entry	Board Wall Passing	Medium
+# stretchoffboards	Vertical	Quick Counterattack	Board Wall + Long Pass	High
 HIGH_RISK_PASS= ['eastwest','stretchoffboards']
 MEDIUM_RISK_PASS = ['ozentryoffboards','outletoffboards','slot']
 LOW_RISK_PASS = ['d2d']
-# 按战术用途分类
-# 大类	包含的具体类型	典型场景
-# 守区出球	outlet, outletoffboards, d2doffboards	破解对手前场压迫
-# 攻区进入	ozentry, ozentryoffboards	建立攻区控球
-# 快速反击	stretch, stretchoffboards, rush	利用速度突破防线
-# 高风险组织	eastwest, eastwestoffboards	横向转移但易被拦截
-# 安全控制	d2d, southoffboards	后卫间传递稳定节奏
+# Key Rescue Operation # SAVE = "eventname == 'save' & type == 'none'"
+# Own Halfway Line Ball Control Success # Classified by Tactical Purposes
+# Major Category	Sub-type Included	Typical Scenarios
+# Guarding Zone Outgoing Ball (Outlet, Outletoffboards, D2D Offboards)	Overcoming the opponent's forward-line pressure
+# Offensive Zone Entry (Ozentry, Ozentry Offboards)	Establishing control in the offensive zone
+# Rapid Counterattack (Stretch, Stretch Offboards, Rush)	Utilizing speed to break through the defense line
+# High-Risk Organization (East-West, East-West Offboards)	Lateral transfer but prone to interception
+# Safe Control (D2D, South Offboards)	Stable rhythm of passing between defenders
 Defensive_zone_passing = ['outlet', 'outletoffboards', 'd2doffboards']
 Entry_into_offensive_zone = ['ozentry', 'ozentryoffboards']
 Quick_counterattack = ['stretch', 'stretchoffboards', 'rush']
@@ -115,13 +118,11 @@ PASS_STATISTIC = {'HIGH_RISK_PASS': HIGH_RISK_PASS,
                   'Safe_control':Safe_control}
 
 
-
-
 Slingshot_chain = [['pass_south',  'pass_north'],
-                   #传球失败，就没有下面这个链
+
                    #['pass_south', 'reception_regular', 'pass_north', 'reception_regular']
                    ]
-#多次回传，找进进攻机会
+# Multiple returns, seeking offensive opportunities
 Reset_Recycle_chain = ['pass_south', 'pass_south']
 
 
@@ -131,7 +132,7 @@ overcome_pressure_chain = [['pass_south', 'block_pass'],
 
 
 
-attach_chain =[['pass_south',  'shot_outside'],# 低效率
+attach_chain =[['pass_south',  'shot_outside'],# inefficiency actions
 
 ['pass_south',  'pass_slot'],
 
@@ -143,8 +144,7 @@ attach_chain =[['pass_south',  'shot_outside'],# 低效率
 east_west_chain = [['pass_south', 'pass_eastwest']]
 
 
-
-# 快速交替，意味着对手前压激烈，或者执行拉扯空间的战术意图
+# Quick alternation implies that the opponent is aggressively pushing forward or is executing a tactic of exploiting space by pulling it apart.
 
 
 pass_rapid_chain = [['pass_south', 'pass_north', 'pass_south'],
