@@ -34,7 +34,6 @@ def extract_sum_feature(df,suffix):
 
     df.iloc[0] = df.sum()
     df = df.add_suffix(suffix)
-    # 仅保留第一行
     return df.iloc[[0]]
 
 def extract_features(data , df, suffix, events,tfrom,to):
@@ -70,7 +69,7 @@ def extract_relative_features(data , df, suffix, events,tfrom,to):
     event_names = list(events.keys())
     res = pd.DataFrame()
     event_names = [str(item) + '_succ' for item in event_names] + event_names
-    #使用一场比赛的两个队伍的数据对比，计算相对值
+    #By comparing the data of two teams from a single game, calculate the relative values.
     grouped = df.groupby(['gameid'])
     exclude_feature = ['teamid','gameid','elapsed_sec','score_diff']
     for name, group in grouped:
@@ -95,15 +94,14 @@ def extract_relative_features(data , df, suffix, events,tfrom,to):
         home_df_copy['control_rate' + suffix] = relative_control_rate
         home_df_copy['control_time' + suffix] = relative_control_time
         home_df_copy['win'] = 0 if winner[2] is False else 1 if winner[0] == home_team_id else 0
-
-        # score diff是主场队伍的
         res = pd.concat([res, home_df_copy], axis=0)
         #extract_sum_feature(data, home_df_copy, suffix, group, home_team_id)
     return res
 
 def enhance_features():
     """
-    特征扰动 + 交换主客场 → 变成 300~750 场比赛的数据,解决训练样本过少的问题
+    Feature perturbation + swapping home and away games →
+    Transforming into data for 300 to 750 matches, solving the problem of insufficient training samples.
     :return: 
     """
     pass
@@ -122,7 +120,7 @@ if __name__ == '__main__':
     unique_gameids = data['gameid'].unique()
     gameids = unique_gameids.tolist()[1:5]
     all_events_index = {**index_definition.EXERTION_INDEX, **index_definition.CONFIDENCE_INDEX}
-    #将第一节时间也分成两个部分,一个是0到540秒，一个是540到1200秒
+    #Divide the first section of time into two parts as well. One part is from 0 to 540 seconds, and the other part is from 540 to 1200 seconds.
 
     first_period_index_df1 =ci.get_index_cut_by_time(data, gameids, all_events_index, 180,tfrom = 0, to = 540)
     res1 = extract_relative_features(data, first_period_index_df1, "_p1", all_events_index, 0, 540)

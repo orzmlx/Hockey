@@ -11,12 +11,12 @@ import math
 ##以下是否增强信息存疑
 
 custom_style = {
-    "desc": "处理中",          # 进度条前的描述文字（支持Emoji）
+    "desc": "Processing",          # Description text before the progress bar (supports Emoji)
     "bar_format": "{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
-    "ncols": 100,                # 进度条总宽度
-  #  "colour": "blue",         # 进度条颜色（支持hex颜色码）
-    "ascii": " ░▓",              # 自定义进度字符（空槽和填充字符）
-    "dynamic_ncols": True        # 根据终端宽度自动调整
+    "ncols": 100,                  # Total width of the progress bar
+  #  "colour": "blue",             # Progress bar color (supports hex color codes)
+    "ascii": " ░▓",                # Custom progress characters (empty and filled characters)
+    "dynamic_ncols": True          # Automatically adjust based on terminal width
 }
 
 
